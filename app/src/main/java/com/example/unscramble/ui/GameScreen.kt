@@ -75,16 +75,17 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
         )
 
         GameLayout(
+
+            mod = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(mediumPadding),
             onUserGuessChanged = { gameViewModel.updateUserGuess(it) },
             wordCount = gameUiState.currentWordCount,
             userGuess = gameViewModel.userGuess,
             onKeyboardDone = { gameViewModel.checkUserGuess() },
             currentScrambledWord = gameUiState.currentScrambledWord,
             isGuessWrong = gameUiState.isGuessedWordWrong,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(mediumPadding)
         )
         Column(
             modifier = Modifier
@@ -132,7 +133,7 @@ fun GameStatus(score: Int, modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         Text(
-            text = stringResource(R.string.score, score),
+            text = stringResource(R.string.score , score),
             style = typography.headlineMedium,
             modifier = Modifier.padding(8.dp)
         )
@@ -148,17 +149,17 @@ fun GameLayout(
     userGuess: String,
     onUserGuessChanged: (String) -> Unit,
     onKeyboardDone: () -> Unit,
-    modifier: Modifier = Modifier
+    mod: Modifier = Modifier
 ) {
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
 
     Card(
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        modifier = mod,
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
     ) {
         Column(
+
             verticalArrangement = Arrangement.spacedBy(mediumPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(mediumPadding)
         ) {
             Text(
@@ -168,7 +169,7 @@ fun GameLayout(
                     .padding(horizontal = 10.dp, vertical = 4.dp)
                     .align(alignment = Alignment.End),
                 text = stringResource(R.string.word_count, wordCount),
-                style = typography.titleMedium,
+                style = typography.titleLarge,
                 color = colorScheme.onPrimary
             )
             Text(
@@ -176,20 +177,14 @@ fun GameLayout(
                 style = typography.displayMedium
             )
             Text(
-                text = stringResource(R.string.instructions),
                 textAlign = TextAlign.Center,
+                text = stringResource(R.string.instructions),
                 style = typography.titleMedium
             )
             OutlinedTextField(
                 value = userGuess,
                 singleLine = true,
-                shape = shapes.large,
                 modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorScheme.surface,
-                    unfocusedContainerColor = colorScheme.surface,
-                    disabledContainerColor = colorScheme.surface,
-                ),
                 onValueChange = onUserGuessChanged,
                 label = {
                     if (isGuessWrong) {
@@ -198,21 +193,16 @@ fun GameLayout(
                         Text(stringResource(R.string.enter_your_word))
                     }
                 },
-                isError = isGuessWrong,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onKeyboardDone() }
-                )
+
+                isError = false,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {onKeyboardDone})
             )
         }
     }
 }
 
-/*
- * Creates and shows an AlertDialog with final score.
- */
+
 @Composable
 private fun FinalScoreDialog(
     score: Int,
